@@ -95,7 +95,7 @@
     }
     .support-textarea {
       width: 100%;
-      height: 150px;
+      height: 120px;
       padding: 12px;
       border-radius: 8px;
       background-color: #3a3f47;
@@ -141,6 +141,7 @@
       font-weight: normal;
       display: none;
     }
+    .show { display: block; }
   </style>
 </head>
 <body>
@@ -199,31 +200,16 @@
           step++;
           setTimeout(nextStep, 500);
         } else {
-          fetch(webhookURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: message })
-          })
-          .then(() => {
-            statusMsg.textContent = '✅ Message sent!';
-            statusMsg.style.color = '#56ff89';
-          })
-          .catch(() => {
-            statusMsg.textContent = '❌ Error sending message.';
-            statusMsg.style.color = '#ff5e5e';
-          });
-          setTimeout(() => {
-            barContainer.style.display = 'none';
-            bar.style.width = '0%';
-            texts.forEach(t => t.style.display = 'none');
-          }, 1000);
+          fetch(webhookURL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: message }) })
+            .then(() => { statusMsg.textContent = '✅ Message sent!'; statusMsg.style.color = '#56ff89'; })
+            .catch(() => { statusMsg.textContent = '❌ Error sending message.'; statusMsg.style.color = '#ff5e5e'; });
+          setTimeout(() => { barContainer.style.display = 'none'; bar.style.width = '0%'; texts.forEach(t => t.style.display = 'none'); }, 1000);
         }
       }
       nextStep();
     }
     function toggleSupportSection() {
-      const supportSection = document.getElementById('supportSection');
-      supportSection.style.display = (supportSection.style.display === 'none' || supportSection.style.display === '') ? 'block' : 'none';
+      document.getElementById('supportSection').classList.toggle('show');
     }
   </script>
 </body>
